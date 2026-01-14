@@ -5,6 +5,7 @@ import { TresCanvas } from '@tresjs/core'
 import { OrbitControls } from '@tresjs/cientos'
 // Importamos el modelo MacBook convertido a Vue
 import MacbookModel14 from './models/Macbook-14.vue'
+import StudioLights from './tresjs/StudioLights.vue'
 
 const store = useMacbookStore()
 const { color, scale } = storeToRefs(store)
@@ -65,6 +66,7 @@ const { setColor, setScale } = store
       - position: ubicación en el espacio 3D
       - scale: tamaño del modelo (controlado por el store)
       -->
+      <StudioLights />
       <MacbookModel14 
         :position="[0, 0, 0]" 
         :scale="scale"
