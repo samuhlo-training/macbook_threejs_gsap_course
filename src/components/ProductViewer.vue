@@ -1,21 +1,22 @@
 <script setup lang="ts">
-import { storeToRefs } from 'pinia';
-import { useMacbookStore } from '../store';
-import { TresCanvas } from '@tresjs/core';
-import { Box, OrbitControls } from '@tresjs/cientos';
-const store = useMacbookStore();
-const { color, scale } = storeToRefs(store);
-const { setColor, setScale } = store;
+import { storeToRefs } from 'pinia'
+import { useMacbookStore } from '../store'
+import { TresCanvas } from '@tresjs/core'
+import { OrbitControls } from '@tresjs/cientos'
+// Importamos el modelo MacBook convertido a Vue
+import MacbookModel14 from './models/Macbook-14.vue'
+
+const store = useMacbookStore()
+const { color, scale } = storeToRefs(store)
+const { setColor, setScale } = store
 </script>
 
 <template>
   <section id="product-viewer" class="w-full">
-    <!-- Headers y estructura asumiendo lo que mostraste antes -->
+    <!-- Headers y estructura -->
     <h2>Take a closer look.</h2>
 
     <div class="controls">
-     
-
       <div class="flex-center gap-5 mt-5">
         <div class="color-control">
           <div
@@ -44,23 +45,33 @@ const { setColor, setScale } = store;
         </div>
       </div>
     </div>
+
+    <!--
+    TRESCANVAS CON MODELO GLTF
+    ==========================
+    Ya NO necesitamos Suspense porque useGLTF de TresJS/Cientos
+    no es async - retorna refs reactivos que se actualizan cuando carga.
+    
+    El componente MacbookModel14 usa v-if="state?.scene" internamente
+    para esperar a que el modelo esté listo.
+    -->
     <TresCanvas id="canvas">
       <TresPerspectiveCamera :position="[0, 2, 5]" :fov="50" :near="0.1" :far="100" />
-      <TresAmbientLight :intensity="2" />
+      <TresAmbientLight :intensity="3" />
       <TresDirectionalLight :position="[2, 2, 2]" :intensity="2" />
       
-      <!-- Usamos Box de cientos que es más simple -->
-      <!-- :key="color" fuerza a recrear el objeto al cambiar color, evitando el error de Vue 3.5 + Tres -->
-      <Box 
+      <!--
+      El modelo MacBook se renderiza directamente.
+      - position: ubicación en el espacio 3D
+      - scale: tamaño del modelo (controlado por el store)
+      -->
+      <MacbookModel14 
         :position="[0, 0, 0]" 
-        :scale="scale * 10" 
-        :args="[1, 1, 1]"
-        :key="color"
-      >
-         <TresMeshStandardMaterial :color="color" />
-      </Box>
-      <OrbitControls :enableZoom="false"/>
+        :scale="scale"
+        :rotation="[0,0,0]"
+      />
+     
+      <OrbitControls make-default :enableZoom="false" />
     </TresCanvas>
   </section>
 </template>
-
