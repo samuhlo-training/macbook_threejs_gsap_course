@@ -91,7 +91,7 @@ import { Environment } from '@tresjs/cientos'
       :position="[0, -25, 10]"
       :angle="0.15"
       :decay="0"
-      :intensity="Math.PI * 0.2"
+      :intensity="Math.PI * 0.05"
     />
     
     <TresSpotLight

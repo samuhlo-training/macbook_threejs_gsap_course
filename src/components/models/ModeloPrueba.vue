@@ -1,10 +1,6 @@
 <script setup lang="ts">
 import { useGLTF } from '@tresjs/cientos'
 import { watch } from 'vue'
-import { Color, type MeshStandardMaterial } from 'three'
-import { storeToRefs } from 'pinia'
-import { useMacbookStore } from '../../store'
-import { noChangeParts } from '../../constants/index'
 
 interface Props {
   position?: [number, number, number]
@@ -18,39 +14,13 @@ const props = withDefaults(defineProps<Props>(), {
   scale: 1,
 })
 
-const store = useMacbookStore()
-const { color } = storeToRefs(store)
-
 const { nodes, materials } = useGLTF('/models/macbook-14-transformed.glb', { draco: true })
 
-
-
-// Logic to change color
-watch(
-  [color, () => nodes.value],
-  ([newColor, currentNodes]) => {
-    if (!currentNodes) return
-
-    // Since we have direct access to materials, we can iterate over them if needed,
-    // or iterate over the nodes to find meshes and update their materials.
-    // However, looking at the template, we are binding specific materials to specific meshes.
-    // The previous logic traversed the scene. Here we can traverse the nodes object.
-
-    Object.values(currentNodes).forEach((node: any) => {
-      if (node.isMesh) {
-         if (!noChangeParts.includes(node.name)) {
-            const material = node.material as MeshStandardMaterial
-            if (material) {
-              material.color = new Color(newColor)
-              material.needsUpdate = true
-            }
-         }
-      }
-    })
-  },
-  { immediate: true }
-)
-
+watch(() => nodes, (n) => {
+  if (n) {
+    console.log('ModeloPrueba nodes:', Object.keys(n))
+  }
+}, { immediate: true })
 </script>
 
 <template>
@@ -64,7 +34,7 @@ watch(
     <TresMesh :geometry="nodes.Object_34.geometry" :material="materials.eJObPwhgFzvfaoZ" :rotation="[Math.PI / 2, 0, 0]" />
     <TresMesh :geometry="nodes.Object_38.geometry" :material="materials.nDsMUuDKliqGFdU" :rotation="[Math.PI / 2, 0, 0]" />
     <TresMesh :geometry="nodes.Object_42.geometry" :material="materials.CRQixVLpahJzhJc" :rotation="[Math.PI / 2, 0, 0]" />
-    <TresMesh :geometry="nodes.Object_48.geometry" :material="materials.YYwBgwvcyZVOOAA" :rotation="[Math.PI / 2, 0, 0]"  />
+    <TresMesh :geometry="nodes.Object_48.geometry" :material="materials.YYwBgwvcyZVOOAA" :rotation="[Math.PI / 2, 0, 0]" />
     <TresMesh :geometry="nodes.Object_54.geometry" :material="materials.SLGkCohDDelqXBu" :rotation="[Math.PI / 2, 0, 0]" />
     <TresMesh :geometry="nodes.Object_58.geometry" :material="materials.WnHKXHhScfUbJQi" :rotation="[Math.PI / 2, 0, 0]" />
     <TresMesh :geometry="nodes.Object_66.geometry" :material="materials.fNHiBfcxHUJCahl" :rotation="[Math.PI / 2, 0, 0]" />

@@ -6,6 +6,8 @@ import { OrbitControls } from '@tresjs/cientos'
 // Importamos el modelo MacBook convertido a Vue
 import MacbookModel14 from './models/Macbook-14.vue'
 import StudioLights from './tresjs/StudioLights.vue'
+// import ModeloPrueba from './models/ModeloPrueba.vue'
+
 
 const store = useMacbookStore()
 const { color, scale } = storeToRefs(store)
@@ -58,21 +60,29 @@ const { setColor, setScale } = store
     -->
     <TresCanvas id="canvas">
       <TresPerspectiveCamera :position="[0, 2, 5]" :fov="50" :near="0.1" :far="100" />
-      <TresAmbientLight :intensity="3" />
-      <TresDirectionalLight :position="[2, 2, 2]" :intensity="2" />
+      
+
       
       <!--
       El modelo MacBook se renderiza directamente.
       - position: ubicación en el espacio 3D
       - scale: tamaño del modelo (controlado por el store)
       -->
-      <StudioLights />
-      <MacbookModel14 
-        :position="[0, 0, 0]" 
-        :scale="scale"
-        :rotation="[0,0,0]"
-      />
-     
+      <Suspense>
+        <TresGroup>
+          <StudioLights />
+          <!-- <ModeloPrueba 
+            :position="[0, 0, 0]" 
+            :scale="scale"
+            :rotation="[0,0,0]"
+          /> -->
+          <MacbookModel14 
+          :position="[0, 0, 0]" 
+          :scale="scale"
+          :rotation="[0,0,0]"
+          />
+        </TresGroup>
+      </Suspense>
       <OrbitControls make-default :enableZoom="false" />
     </TresCanvas>
   </section>
