@@ -13,6 +13,10 @@ dist-ssr
 *.local
 .agents
 
+src/components/models/Macbook-14-antiguo-1.vue
+src/components/models/Macbook-14-antiguo-2.vue
+
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json

@@ -6,7 +6,6 @@ import { OrbitControls } from '@tresjs/cientos'
 // Importamos el modelo MacBook convertido a Vue
 import MacbookModel14 from './models/Macbook-14.vue'
 import StudioLights from './tresjs/StudioLights.vue'
-// import ModeloPrueba from './models/ModeloPrueba.vue'
 
 
 const store = useMacbookStore()
@@ -52,8 +51,6 @@ const { setColor, setScale } = store
     <!--
     TRESCANVAS CON MODELO GLTF
     ==========================
-    Ya NO necesitamos Suspense porque useGLTF de TresJS/Cientos
-    no es async - retorna refs reactivos que se actualizan cuando carga.
     
     El componente MacbookModel14 usa v-if="state?.scene" internamente
     para esperar a que el modelo esté listo.
@@ -71,11 +68,7 @@ const { setColor, setScale } = store
       <Suspense>
         <TresGroup>
           <StudioLights />
-          <!-- <ModeloPrueba 
-            :position="[0, 0, 0]" 
-            :scale="scale"
-            :rotation="[0,0,0]"
-          /> -->
+
           <MacbookModel14 
           :position="[0, 0, 0]" 
           :scale="scale"
