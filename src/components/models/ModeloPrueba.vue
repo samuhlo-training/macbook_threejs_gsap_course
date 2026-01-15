@@ -118,6 +118,10 @@ const handlePointerOut = (e: any) => {
   e.stopPropagation()
   const mesh = e.object
   if (mesh.userData.originalMaterial) {
+    // Dispose the cloned hover material before restoring original
+    if (mesh.material !== mesh.userData.originalMaterial) {
+      mesh.material.dispose()
+    }
     mesh.material = mesh.userData.originalMaterial
   }
 }
