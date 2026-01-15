@@ -2,6 +2,15 @@
 import NavBar from './components/NavBar.vue'
 import Hero from './components/Hero.vue'
 import ProductViewer from './components/ProductViewer.vue'
+import gsap from 'gsap'
+import { ScrollTrigger, SplitText } from 'gsap/all'
+import { onMounted } from 'vue'
+
+
+onMounted(() => {
+  gsap.registerPlugin(ScrollTrigger)
+  gsap.registerPlugin(SplitText)
+})
 </script>
 
 <template>
