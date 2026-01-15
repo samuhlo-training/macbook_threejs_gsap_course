@@ -13,7 +13,7 @@ import { navLinks } from "../constants";
                 </li>
             </ul>
 
-            <div className="flex-center gap-3">
+            <div class="flex-center gap-3">
                 <button>
                     <img src="/search.svg" alt="Search" />
                 </button>

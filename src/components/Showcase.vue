@@ -87,7 +87,7 @@ onUnmounted(() => {
             <div class="media">
                 <video src="/videos/game.mp4" loop muted autoplay playsinline />
                 <div class="mask">
-                    <img src="/mask-logo.svg" />
+                    <img src="/mask-logo.svg" alt="" />
                 </div>
             </div>
 
