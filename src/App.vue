@@ -2,6 +2,7 @@
 import NavBar from './components/NavBar.vue'
 import Hero from './components/Hero.vue'
 import ProductViewer from './components/ProductViewer.vue'
+import Showcase from './components/Showcase.vue'
 import gsap from 'gsap'
 import { ScrollTrigger, SplitText } from 'gsap/all'
 import { onMounted } from 'vue'
@@ -15,8 +16,7 @@ onMounted(() => {
 
 <template>
   <NavBar />
-  <Hero />
+  <Hero />  
   <ProductViewer />
+  <Showcase />
 </template>
-
-
