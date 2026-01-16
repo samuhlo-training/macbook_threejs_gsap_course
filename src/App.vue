@@ -5,6 +5,7 @@ import ProductViewer from './components/ProductViewer.vue'
 import Showcase from './components/Showcase.vue'
 import Performance from './components/Performance.vue'
 import Features from './components/Features.vue'
+import Highlights from './components/Highlights.vue'
 import gsap from 'gsap'
 import { ScrollTrigger, SplitText } from 'gsap/all'
 import { onMounted } from 'vue'
@@ -23,4 +24,5 @@ onMounted(() => {
   <Showcase />
   <Performance />
   <Features />
+  <Highlights />
 </template>
