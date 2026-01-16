@@ -17,7 +17,7 @@
  * ----------------------------------------------------------------------
  */
 
-import { ref, watch, onMounted, onUnmounted } from 'vue'
+import { ref, shallowRef, watch, onMounted, onUnmounted } from 'vue'
 import { TresCanvas } from '@tresjs/core'
 import gsap from 'gsap'
 import { features, featureSequence } from '../constants/index'
@@ -33,12 +33,19 @@ import MacbookModel from './models/Macbook.vue'
 // =====================================================================
 
 const groupRef = ref<any>(null)
-let ctx: gsap.Context | null = null
-let animationsInitialized = false
+
+// Usamos shallowRef para ctx porque GSAP Context no necesita reactividad profunda
+const ctx = shallowRef<gsap.Context | null>(null)
+
+// Ref para controlar si las animaciones ya se inicializaron en esta instancia
+const animationsInitialized = ref(false)
 
 const store = useMacbookStore()
 const { setTexture } = store
 const isMobile = useMediaQuery('(max-width: 1024px)')
+
+// Array para almacenar los videos precargados y permitir su limpieza
+const preloadedVideos: HTMLVideoElement[] = []
 
 
 // =====================================================================
@@ -46,7 +53,7 @@ const isMobile = useMediaQuery('(max-width: 1024px)')
 // =====================================================================
 
 onMounted(() => {
-    // Pre-cargar todos los videos
+    // Pre-cargar todos los videos y almacenarlos para posterior limpieza
     featureSequence.forEach((feature) => {
         const video = document.createElement('video')
         Object.assign(video, {
@@ -57,6 +64,9 @@ onMounted(() => {
             crossOrigin: 'anonymous',
         })
         video.load()
+        
+        // Almacenar referencia para poder limpiar en onUnmounted
+        preloadedVideos.push(video)
     })
 })
 
@@ -75,11 +85,11 @@ onMounted(() => {
 watch(
     groupRef,
     (newValue) => {
-        if (!newValue || animationsInitialized) return
+        if (!newValue || animationsInitialized.value) return
         
-        animationsInitialized = true
+        animationsInitialized.value = true
 
-        ctx = gsap.context(() => {
+        ctx.value = gsap.context(() => {
             /**
              * TIMELINE 1: Rotación del modelo 3D
              * 
@@ -163,7 +173,28 @@ watch(
 )
 
 onUnmounted(() => {
-    ctx?.revert()
+    // Limpiar GSAP context al desmontar
+    ctx.value?.revert()
+    
+    // Limpiar videos precargados para liberar memoria
+    preloadedVideos.forEach((video) => {
+        // Pausar reproducción si está en curso
+        video.pause()
+        
+        // Limpiar src y forzar descarga de buffers
+        video.src = ''
+        video.load()
+        
+        // Eliminar atributos de media
+        video.removeAttribute('crossOrigin')
+        video.removeAttribute('playsInline')
+    })
+    
+    // Vaciar el array para permitir garbage collection
+    preloadedVideos.length = 0
+    
+    // Resetear el flag para que si el componente se remonta, las animaciones se reinicien
+    animationsInitialized.value = false
 })
 </script>
 
