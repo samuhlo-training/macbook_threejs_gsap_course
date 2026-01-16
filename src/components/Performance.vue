@@ -13,9 +13,10 @@ import { performanceImages, performanceImgPositions } from '../constants/index';
 gsap.registerPlugin(ScrollTrigger);
 
 let ctx: gsap.Context;
+let mm: gsap.MatchMedia;
 
 onMounted(() => {
-    const mm = gsap.matchMedia();
+    mm = gsap.matchMedia();
 
     ctx = gsap.context(() => {
         // [ANIMATION] :: TEXT_REVEAL (Global)
@@ -35,15 +36,18 @@ onMounted(() => {
                 },
             }
         );
+    });
 
-        // [ANIMATION] :: IMAGE_SCATTER (Desktop Only)
-        mm.add({
-            isDesktop: "(min-width: 1025px)", // Matching !isMobile (<= 1024) logic
-        }, (context) => {
-            const { isDesktop } = context.conditions as { isDesktop: boolean };
+    // [ANIMATION] :: IMAGE_SCATTER (Desktop Only)
+    mm.add({
+        isDesktop: "(min-width: 1025px)", // Matching !isMobile (<= 1024) logic
+    }, (context) => {
+        const { isDesktop } = context.conditions as { isDesktop: boolean };
 
-            if (!isDesktop) return;
+        if (!isDesktop) return;
 
+        // Use a local context for the scoped animations
+        const localCtx = gsap.context(() => {
             const tl = gsap.timeline({
                 defaults: { duration: 2, ease: "power1.inOut", overwrite: "auto" },
                 scrollTrigger: {
@@ -69,10 +73,16 @@ onMounted(() => {
                 tl.to(selector, vars, 0);
             });
         });
+
+        // Return a cleanup function
+        return () => {
+            localCtx.revert();
+        };
     });
 });
 
 onUnmounted(() => {
+    mm?.revert();
     ctx?.revert();
 });
 

@@ -11,7 +11,7 @@
  * @module    components/models
  * ----------------------------------------------------------------------
  */
-import { computed, watch, onUnmounted } from 'vue'
+import { computed, watch, onUnmounted, shallowRef } from 'vue'
 import { useGLTF } from '@tresjs/cientos'
 import { Color, SRGBColorSpace, VideoTexture } from 'three'
 import { storeToRefs } from 'pinia'
@@ -60,7 +60,8 @@ if (scene) {
 // [SECTION] :: VIDEO TEXTURE MANAGER
 // =====================================================================
 // Manual management of HTML5 video texture for Three.js
-let videoTexture: VideoTexture | null = null
+// using shallowRef to ensure reactivity in template and proper cleanup
+const videoTexture = shallowRef<VideoTexture | null>(null)
 const video = document.createElement('video')
 
 // Mandatory configuration for automatic playback without interaction
@@ -77,25 +78,31 @@ video.playsInline = true
 if (textureUrl.value) {
     video.src = textureUrl.value
     video.play().catch(e => console.error('Macbook: Error playing video', e))
-    videoTexture = new VideoTexture(video)
-    videoTexture.colorSpace = SRGBColorSpace
-    videoTexture.flipY = false // VideoTextures sometimes need flipY: false depending on UV mapping
+    const texture = new VideoTexture(video)
+    texture.colorSpace = SRGBColorSpace
+    texture.flipY = true // VideoTextures sometimes need flipY: false depending on UV mapping
+    videoTexture.value = texture
 }
 
 watch(textureUrl, (newUrl) => {
+    // 1. Clean up previous texture if it exists to avoid memory leaks
+    if (videoTexture.value) {
+        videoTexture.value.dispose()
+    }
+
     if (newUrl) {
         video.src = newUrl
         // Play promise to ensure browser allows playback
         video.play().catch(e => console.error('Macbook: Error playing video', e))
         
-        // Lazy initialization of texture if it didn't exist before
-        if (!videoTexture) {
-            videoTexture = new VideoTexture(video)
-            videoTexture.colorSpace = SRGBColorSpace
-            videoTexture.flipY = false
-        }
+        // Create new texture instance
+        const texture = new VideoTexture(video)
+        texture.colorSpace = SRGBColorSpace
+        texture.flipY = true
+        videoTexture.value = texture
     } else {
         video.pause()
+        videoTexture.value = null
     }
 })
 
@@ -112,8 +119,9 @@ onUnmounted(() => {
     // and phantom sounds in the background.
     video.pause()
     video.src = ''
-    if (videoTexture) {
-        videoTexture.dispose()
+    if (videoTexture.value) {
+        videoTexture.value.dispose()
+        videoTexture.value = null
     }
 })
 

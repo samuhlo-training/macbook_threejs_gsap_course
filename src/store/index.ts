@@ -22,7 +22,7 @@ export const useMacbookStore = defineStore('macbook', () => {
     // =====================================================================
     // Initial reactive values.
     const color = ref<string>('#2e2c2e')            // Space Grey by default
-    const scale = ref<number>(0.08)                 // Initial size (14")
+    const scale = ref<number>(0.08)                 // Initial size (16")
     const texture = ref<string>('/videos/feature-1.mp4') // Default video
 
     // =====================================================================

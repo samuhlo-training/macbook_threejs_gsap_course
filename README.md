@@ -73,9 +73,11 @@ Implementation of `gsap.context()` and `onMounted/onUnmounted` Lifecycle to ensu
 
 ```typescript
 // Example of how we handle GSAP cleanup in Vue 3
+let ctx: gsap.Context;
+
 onMounted(() => {
   // We initialize ScrollTrigger with a context for easy cleanup
-  const ctx = gsap.context(() => {
+  ctx = gsap.context(() => {
     gsap.to(modelRef.value.position, {
       y: -1,
       scrollTrigger: {
@@ -85,12 +87,12 @@ onMounted(() => {
       }
     })
   })
-
-  // Essential for SPA navigation
-  onUnmounted(() => {
-    ctx.revert();
-  });
 })
+
+// Essential for SPA navigation - registered at top level
+onUnmounted(() => {
+  ctx?.revert();
+});
 ```
 
 <div align="center">
