@@ -20,14 +20,13 @@
 import { ref, watch, onMounted, onUnmounted } from 'vue'
 import { TresCanvas } from '@tresjs/core'
 import gsap from 'gsap'
-import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { features, featureSequence } from '../constants/index'
 import { useMacbookStore } from '../store'
 import { useMediaQuery } from '../composables/useMediaQuery'
 import StudioLights from './tresjs/StudioLights.vue'
 import MacbookModel from './models/Macbook.vue'
 
-gsap.registerPlugin(ScrollTrigger)
+
 
 // =====================================================================
 // [SECTION] :: COMPONENT STATE
@@ -95,7 +94,7 @@ watch(
                     trigger: '#canvas-wrapper',
                     start: 'top top',
                     end: 'bottom top',
-                    scrub: 1,
+                    scrub: 3,  // Aumentado para animación más suave
                     pin: true,
                 }
             })
@@ -103,15 +102,15 @@ watch(
             /**
              * TIMELINE 2: Sincronización de contenido
              * 
-             * NOTA: Usamos el mismo trigger que modelTimeline
-             * para que ambas animaciones estén sincronizadas.
+             * start: 'top top' - Empieza cuando el canvas está pinneado arriba
+             * (no 'top center' que era demasiado pronto)
              */
             const contentTimeline = gsap.timeline({
                 scrollTrigger: {
                     trigger: '#canvas-wrapper',
-                    start: 'top center',
+                    start: 'top center',  
                     end: 'bottom top',
-                    scrub: 1,
+                    scrub: 2,  // Aumentado de 1 a 2 para animación más suave
                 }
             })
 
@@ -121,29 +120,43 @@ watch(
                 { y: Math.PI * 2, ease: 'power1.inOut' }
             )
 
-            // Sincronización de contenido y videos
-            // Cada .to() tiene duration: 1 para distribuir uniformemente
-            // el tiempo de la timeline entre los 5 features
+            /**
+             * Sincronización de contenido y videos
+             * 
+             * ESTRUCTURA:
+             * 1. Primero cargamos el video (sin mostrar texto)
+             * 2. Luego mostramos el texto y dejamos tiempo para leerlo
+             * 
+             * El "delay" inicial permite que el ordenador se centre
+             * antes de que aparezca el primer texto.
+             */
             contentTimeline
-                // Feature 1: Email AI
+                // INTRO: Cargar primer video y dar tiempo inicial
                 .call(() => setTexture('/videos/feature-1.mp4'))
-                .to('.box1', { opacity: 1, y: 0, duration: 1 })
+                .to({}, { duration: 0.5 })  // Espacio vacío para centrar el ordenador
+                
+                // Feature 1: Email AI
+                .to('.box1', { opacity: 1, y: 0, duration: 0.8 })
+                .to({}, { duration: 0.2 })  // Pequeña pausa para leer
                 
                 // Feature 2: Image AI
                 .call(() => setTexture('/videos/feature-2.mp4'))
-                .to('.box2', { opacity: 1, y: 0, duration: 1 })
+                .to('.box2', { opacity: 1, y: 0, duration: 0.8 })
+                .to({}, { duration: 0.2 })
                 
                 // Feature 3: Summarize AI
                 .call(() => setTexture('/videos/feature-3.mp4'))
-                .to('.box3', { opacity: 1, y: 0, duration: 1 })
+                .to('.box3', { opacity: 1, y: 0, duration: 0.8 })
+                .to({}, { duration: 0.2 })
                 
                 // Feature 4: AirDrop
                 .call(() => setTexture('/videos/feature-4.mp4'))
-                .to('.box4', { opacity: 1, y: 0, duration: 1 })
+                .to('.box4', { opacity: 1, y: 0, duration: 0.8 })
+                .to({}, { duration: 0.2 })
                 
                 // Feature 5: Writing Tool
                 .call(() => setTexture('/videos/feature-5.mp4'))
-                .to('.box5', { opacity: 1, y: 0, duration: 1 })
+                .to('.box5', { opacity: 1, y: 0, duration: 0.8 })
         })
     },
     { flush: 'post' }
@@ -180,7 +193,7 @@ onUnmounted(() => {
                         <StudioLights />
                         <TresGroup ref="groupRef">
                             <MacbookModel 
-                                :scale="isMobile ? 0.05 : 0.08" 
+                                :scale="isMobile ? 0.05 : 0.07" 
                                 :position="[0, -1, 0]" 
                             />
                         </TresGroup>
