@@ -20,14 +20,14 @@ onMounted(() => {
     ctx = gsap.context(() => {
         // [ANIMATION] :: TEXT_REVEAL (Global)
         gsap.fromTo(
-            ".content p",
+            "#performance .content p",
             { opacity: 0, y: 10 },
             {
                 opacity: 1,
                 y: 0,
                 ease: "power1.out",
                 scrollTrigger: {
-                    trigger: ".content p",
+                    trigger: "#performance .content p",
                     start: "top bottom",
                     end: "top center",
                     scrub: true,
