@@ -1,0 +1,24 @@
+<script setup lang="ts">
+import { footerLinks } from '../constants'
+</script>
+
+<template>
+    <footer>
+            <div class="info">
+                <p>More ways to shop: Find an Apple Store or other retailer near you. Or call 000800 040 1966.</p>
+                <img src="/logo.svg" alt ="Apple logo"/>
+            </div>
+
+            <hr />
+
+            <div class="links">
+                <p>Copyright © 2024 Apple Inc. All rights reserved.</p>
+
+                <ul>
+                    <li v-for="link in footerLinks" :key="link.label">
+                        <a :href="link.link">{{ link.label }}</a>
+                    </li>
+                </ul>
+            </div>
+        </footer>
+</template>
