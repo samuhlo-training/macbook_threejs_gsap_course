@@ -1,9 +1,34 @@
 <script setup>
+/**
+ * [COMPONENT] :: HERO_SECTION
+ * ----------------------------------------------------------------------
+ * Initial impact section ("Above the Fold").
+ * It is the first impression the user receives when loading the page.
+ *
+ * Technical Logic:
+ * - Direct DOM manipulation (Template Refs) to control the video.
+ * - PlaybackRate adjustment for stylistic effects.
+ *
+ * @module    src/components/Hero
+ * ----------------------------------------------------------------------
+ */
 import { ref, onMounted } from 'vue';
 
+// =====================================================================
+// [SECTION] :: COMPONENT STATE
+// =====================================================================
+// Create a "DOM Reference" (Template Ref).
+// Initially null, but Vue will populate it when the component mounts.
 const videoRef = ref(null);
+
+// =====================================================================
+// [SECTION] :: LIFECYCLE HOOKS
+// =====================================================================
 onMounted(() => {
+  // Verify the ref exists before attempting to access its properties.
+  // This is a good defensive practice in Vue.
   if (videoRef.value) {
+    // Speed up the video to 2x (playbackRate) for a more dynamic feel.
     videoRef.value.playbackRate = 2;
   }
 });
@@ -16,7 +41,11 @@ onMounted(() => {
       <img src="/title.png" alt="MacBook Title" />
     </div>
 
-    <!-- El ref se vincula automáticamente a la variable con el mismo nombre -->
+    <!-- 
+      [REF_BINDING] :: VIDEO_CONTROL
+      The 'ref="videoRef"' attribute connects this HTML element
+      with the const videoRef variable in the script.
+    -->
     <video ref="videoRef" src="/videos/hero.mp4" autoPlay muted playsInline></video>
 
     <button>Buy</button>

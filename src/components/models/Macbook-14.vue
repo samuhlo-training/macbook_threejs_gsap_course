@@ -2,12 +2,12 @@
 /**
  * [COMPONENT] :: MACBOOK_MODEL_14
  * ----------------------------------------------------------------------
- * Componente que representa el modelo 3D del MacBook Pro de 14".
+ * Component representing the 3D model of the MacBook Pro 14".
  * 
- * Responsabilidades:
- * 1. Cargar el modelo GLTF/GLB optimizado.
- * 2. Gestionar la textura de la pantalla de forma independiente.
- * 3. Mapear los materiales para permitir cambios de color dinámicos (Pinia).
+ * Responsibilities:
+ * 1. Load the optimized GLTF/GLB model.
+ * 2. Manage the screen texture independently.
+ * 3. Map materials to allow dynamic colors changes (Pinia).
  *
  * @module    components/models
  * ----------------------------------------------------------------------
@@ -44,8 +44,8 @@ const { color } = storeToRefs(store)
 
 /**
  * [COMPUTED] :: MODEL_COLOR
- * Transformamos el string de color del store en una instancia de Color de Three.js.
- * Esto asegura consistencia en el renderizado y evita re-parseos innecesarios.
+ * Transform the color string from the store into a Three.js Color instance.
+ * This ensures consistency in rendering and avoids unnecessary re-parsing.
  */
 const modelColor = computed(() => new Color(color.value))
 
@@ -53,19 +53,19 @@ const modelColor = computed(() => new Color(color.value))
 // [SECTION] :: ASSET LOADING (MODEL)
 // =====================================================================
 /**
- * Carga asíncrona del modelo 3D usando Draco compresión.
- * useGLTF de @tresjs/cientos maneja automágicamente el caching y la carga.
+ * Async loading of the 3D model using Draco compression.
+ * useGLTF from @tresjs/cientos automagically handles caching and loading.
  */
 const modelRef = await useGLTF('/models/macbook-14-transformed.glb', { draco: true })
 
-// Extraemos la escena y preparamos nodos/materiales para acceso directo
+// Extract scene and prepare nodes/materials for direct access
 const model = modelRef.state?.value
 const scene = model?.scene
 
 const nodes: Record<string, any> = {}
 const materials: Record<string, any> = {}
 
-// Mapeamos los objetos para poder referenciarlos individualmente en el template
+// Map objects to be able to reference them individually in the template
 if (scene) {
   scene.traverse((object: any) => {
     if (object.name) nodes[object.name] = object
@@ -79,8 +79,8 @@ if (scene) {
 // [SECTION] :: ASSET LOADING (TEXTURES)
 // =====================================================================
 /**
- * Gestión manual de la textura de la pantalla.
- * Separamos la textura del modelo base para mayor calidda y control.
+ * Manual management of the screen texture.
+ * We separate the texture from the base model for higher quality and control.
  */
 const textureLoader = new TextureLoader()
 let texture: Texture | null = null
@@ -88,11 +88,11 @@ let texture: Texture | null = null
 try {
   texture = await textureLoader.loadAsync('/screen.png')
   if (texture) {
-    texture.colorSpace = SRGBColorSpace // Crucial para que los colores no se vean lavados
-    texture.flipY = true // Corrección de orientación estándar en WebGL
+    texture.colorSpace = SRGBColorSpace // Crucial so colors don't look washed out
+    texture.flipY = true // Standard orientation correction in WebGL
     texture.needsUpdate = true
     
-    // Validación de seguridad para UVs
+    // Safety validation for UVs
     if (nodes.Object_123 && !nodes.Object_123.geometry.attributes.uv) {
         console.warn('Macbook-14: Object_123 has no UV attributes! Texture data cannot be mapped.')
     }
@@ -105,9 +105,9 @@ try {
 <template>
   <TresGroup v-if="nodes?.Object_10" :position="props.position" :rotation="props.rotation" :scale="props.scale">
     <!-- 
-      MESHES ESTRUCTURALES
-      Cada TresMesh representa una parte del portátil.
-      Usamos :material-color para vincular reactivamente el color del chasis.
+      STRUCTURAL MESHES
+      Each TresMesh represents a part of the laptop.
+      We use :material-color to reactively bind the chassis color.
     -->
     <TresMesh :geometry="nodes.Object_10.geometry" :material="materials.PaletteMaterial001" :rotation="[Math.PI / 2, 0, 0]" />
     <TresMesh :geometry="nodes.Object_16.geometry" :material="materials.zhGRTuGrQoJflBD" :material-color="modelColor" :rotation="[Math.PI / 2, 0, 0]" />
@@ -127,7 +127,7 @@ try {
     <TresMesh :geometry="nodes.Object_96.geometry" :material="materials.PaletteMaterial003" :material-color="modelColor" :rotation="[Math.PI / 2, 0, 0]" />
     <TresMesh :geometry="nodes.Object_107.geometry" :material="materials.JvMFZolVCdpPqjj" :material-color="modelColor" :rotation="[Math.PI / 2, 0, 0]" />
     
-    <!-- PANTALLA: Aplicamos la textura cargada manualmente -->
+    <!-- SCREEN: Apply manually loaded texture -->
     <TresMesh :geometry="nodes.Object_123.geometry" :rotation="[Math.PI / 2, 0, 0]">
       <TresMeshStandardMaterial v-if="texture" :map="texture" :roughness="0.2" :metalness="0.1" />
       <TresMeshStandardMaterial v-else color="black" />

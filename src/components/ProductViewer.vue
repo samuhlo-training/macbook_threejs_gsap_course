@@ -2,14 +2,14 @@
 /**
  * [COMPONENT] :: PRODUCT_VIEWER
  * ----------------------------------------------------------------------
- * Contenedor principal para la visualización 3D del producto.
- * Actúa como la "página" o sección maestra donde convergen la UI y el Canvas 3D.
+ * Main container for 3D product visualization.
+ * Acts as the "master" page or section where UI and 3D Canvas converge.
  * 
- * Responsabilidades:
- * 1. Conectar con el Store (Pinia) para gestionar el estado global.
- * 2. Renderizar los controles de UI (HTML/CSS) para color y tamaño.
- * 3. Inicializar el entorno 3D (TresCanvas, Luces, Cámara).
- * 4. Orquestar la carga del componente 3D complejo (ModelSwitcher).
+ * Responsibilities:
+ * 1. Connect with Store (Pinia) to manage global state.
+ * 2. Render UI controls (HTML/CSS) for color and size.
+ * 3. Initialize the 3D environment (TresCanvas, Lights, Camera).
+ * 4. Orchestrate the loading of the complex 3D component (ModelSwitcher).
  *
  * @module    components
  * ----------------------------------------------------------------------
@@ -19,10 +19,10 @@ import { useMacbookStore } from '../store'
 import { TresCanvas } from '@tresjs/core'
 
 /**
- * [IMPORT] :: COMPONENTES 3D
- * Importamos los sub-componentes específicos del entorno TresJS.
- * - StudioLights: Configuración de iluminación de estudio.
- * - ModelSwitcher: Lógica de intercambio de modelos.
+ * [IMPORT] :: 3D COMPONENTS
+ * Import specific sub-components for the TresJS environment.
+ * - StudioLights: Studio lighting configuration.
+ * - ModelSwitcher: Model switching logic.
  */
 import StudioLights from './tresjs/StudioLights.vue'
 import ModelSwitcher from './tresjs/ModelSwitcher.vue'
@@ -35,8 +35,8 @@ import { useMediaQuery } from '../composables/useMediaQuery'
 // =====================================================================
 const store = useMacbookStore()
 /**
- * Usamos storeToRefs para mantener la reactividad al desestructurar.
- * Si hiciéramos `const { color } = store`, perderíamos la conexión reactiva.
+ * We use storeToRefs to maintain reactivity when destructuring.
+ * If we did `const { color } = store`, we would lose the reactive connection.
  */
 const { color, scale } = storeToRefs(store)
 const { setColor, setScale } = store
@@ -51,7 +51,7 @@ const isMobile = useMediaQuery('(max-width: 1024px)')
   <section id="product-viewer" class="w-full">
     <!-- 
       [SECTION] :: UI & CONTROLS (HTML LAYER)
-      Esta capa vive "por encima" del canvas 3D. Es HTML estándar.
+      This layer lives "above" the 3D canvas. It is standard HTML.
     -->
     <h2>Take a closer look.</h2>
 
@@ -60,12 +60,12 @@ const isMobile = useMediaQuery('(max-width: 1024px)')
         
         <!-- CONTROL :: COLOR SELECTOR -->
         <div class="color-control">
-          <!-- Opción: Silver (#adb5bd) -->
+          <!-- Option: Silver (#adb5bd) -->
           <div
             :class="['bg-neutral-300', { active: color === '#adb5bd' }]"
             @click="setColor('#adb5bd')"
           ></div>
-          <!-- Opción: Space Grey (#2e2c2e) -->
+          <!-- Option: Space Grey (#2e2c2e) -->
           <div
             :class="['bg-neutral-900', { active: color === '#2e2c2e' }]"
             @click="setColor('#2e2c2e')"
@@ -74,14 +74,14 @@ const isMobile = useMediaQuery('(max-width: 1024px)')
 
         <!-- CONTROL :: SIZE SELECTOR -->
         <div class="size-control">
-          <!-- Opción: 14 Pulgadas -->
+          <!-- Option: 14 Inches -->
           <div
             :class="scale === 0.06 ? 'bg-white text-black' : 'bg-transparent text-white'"
             @click="setScale(0.06)"
           >
             <p>14"</p>
           </div>
-          <!-- Opción: 16 Pulgadas -->
+          <!-- Option: 16 Inches -->
           <div
             :class="scale === 0.08 ? 'bg-white text-black' : 'bg-transparent text-white'"
             @click="setScale(0.08)"
@@ -94,23 +94,23 @@ const isMobile = useMediaQuery('(max-width: 1024px)')
 
     <!--
       [SECTION] :: 3D SCENE (WEBGL LAYER)
-      Aquí entra en juego TresJS. Todo dentro de <TresCanvas> es magia 3D.
+      TresJS comes into play here. Everything inside <TresCanvas> is 3D magic.
     -->
     <TresCanvas id="canvas">
-      <!-- CÁMARA: El ojo del espectador -->
+      <!-- CAMERA: The spectator's eye -->
       <TresPerspectiveCamera :position="[0, 2, 5]" :fov="50" :near="0.1" :far="100" />
       
       <!-- 
-        SUSPENSE: Manejo de carga asíncrona.
-        Como los modelos 3D son pesados, Suspense nos permite esperar a que estén listos
-        antes de intentar renderizarlos, evitando fallos.
+        SUSPENSE: Async loading handling.
+        Since 3D models are heavy, Suspense allows us to wait until they are ready
+        before attempting to render them, avoiding crashes.
       -->
       <Suspense>
         <TresGroup>
-          <!-- ILUMINACIÓN -->
+          <!-- LIGHTING -->
           <StudioLights />
 
-          <!-- CONTENIDO PRINCIPAL -->
+          <!-- MAIN CONTENT -->
           <ModelSwitcher :scale="scale" :isMobile="isMobile" />
         </TresGroup>
       </Suspense>

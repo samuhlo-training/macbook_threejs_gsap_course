@@ -1,5 +1,17 @@
 <script setup lang="ts">
-import { computed, watch, onUnmounted } from 'vue'
+/**
+ * [COMPONENT] :: MACBOOK_VIDEO_MODEL
+ * ----------------------------------------------------------------------
+ * MacBook model variant specialized for the "Features" section.
+ * 
+ * Unique Features:
+ * - Support for VIDEO textures on the screen (VideoTexture).
+ * - Optimized for 360-degree rotation without user controls.
+ *
+ * @module    components/models
+ * ----------------------------------------------------------------------
+ */
+import { computed, watch, onUnmounted, shallowRef } from 'vue'
 import { useGLTF } from '@tresjs/cientos'
 import { Color, SRGBColorSpace, VideoTexture } from 'three'
 import { storeToRefs } from 'pinia'
@@ -17,20 +29,21 @@ const props = withDefaults(defineProps<Props>(), {
   scale: 1,
 })
 
+// =====================================================================
+// [SECTION] :: STATE INTEGRATION
+// =====================================================================
 const store = useMacbookStore()
 const { color, texture: textureUrl } = storeToRefs(store)
 
-// Ensure we pass a Three.js Color instance to the material-color prop to avoid any parsing issues
 const modelColor = computed(() => new Color(color.value))
 
-// Cientos useGLTF returns a reactive wrapper, not the direct GLTF object in some versions
+// =====================================================================
+// [SECTION] :: MODEL LOADING
+// =====================================================================
 const modelRef = await useGLTF('/models/macbook-transformed.glb', { draco: true })
-// Intentar obtener el objeto GLTF real desde el wrapper
 const model = modelRef.state?.value
-
 const scene = model?.scene
 
-// Intentar obtener el objeto GLTF real desde el wrapper
 const nodes: Record<string, any> = {}
 const materials: Record<string, any> = {}
 
@@ -43,51 +56,72 @@ if (scene) {
   })
 }
 
-// Configuración de VideoTexture
-let videoTexture: VideoTexture | null = null
+// =====================================================================
+// [SECTION] :: VIDEO TEXTURE MANAGER
+// =====================================================================
+// Manual management of HTML5 video texture for Three.js
+// using shallowRef to ensure reactivity in template and proper cleanup
+const videoTexture = shallowRef<VideoTexture | null>(null)
 const video = document.createElement('video')
 
-// Initialize video settings
+// Mandatory configuration for automatic playback without interaction
 video.crossOrigin = 'Anonymous'
 video.loop = true
 video.muted = true
 video.playsInline = true
-// video.autoplay = true // Intentaremos hacer play manualmente
 
-// Si ya hay URL en el store, asignarla y reproducir
+/**
+ * [LOGIC] :: TEXTURE_SYNC
+ * Synchronizes the DOM <video> element with the WebGL texture.
+ * If the URL changes in the store, we update the video and the texture.
+ */
 if (textureUrl.value) {
     video.src = textureUrl.value
     video.play().catch(e => console.error('Macbook: Error playing video', e))
-    videoTexture = new VideoTexture(video)
-    videoTexture.colorSpace = SRGBColorSpace
-    videoTexture.flipY = true // Ajustar según necesidad, usualmente las texturas GLTF se invierten en Y
+    const texture = new VideoTexture(video)
+    texture.colorSpace = SRGBColorSpace
+    texture.flipY = true // VideoTextures sometimes need flipY: false depending on UV mapping
+    videoTexture.value = texture
 }
 
-// Watch para cambios en la URL (por si cambia la textura en tiempo de ejecución)
 watch(textureUrl, (newUrl) => {
+    // 1. Clean up previous texture if it exists to avoid memory leaks
+    if (videoTexture.value) {
+        videoTexture.value.dispose()
+    }
+
     if (newUrl) {
         video.src = newUrl
+        // Play promise to ensure browser allows playback
         video.play().catch(e => console.error('Macbook: Error playing video', e))
-        if (!videoTexture) {
-            videoTexture = new VideoTexture(video)
-            videoTexture.colorSpace = SRGBColorSpace
-            videoTexture.flipY = true
-        }
+        
+        // Create new texture instance
+        const texture = new VideoTexture(video)
+        texture.colorSpace = SRGBColorSpace
+        texture.flipY = true
+        videoTexture.value = texture
     } else {
         video.pause()
+        videoTexture.value = null
     }
 })
 
-// Check UVs
+// UV validation to avoid silent black textures
 if (nodes.Object_123 && !nodes.Object_123.geometry.attributes.uv) {
     console.warn('Macbook: Object_123 has no UV attributes! Video texture cannot be mapped.')
 }
 
+// =====================================================================
+// [SECTION] :: CLEANUP
+// =====================================================================
 onUnmounted(() => {
+    // It is CRITICAL to clean up video resources to avoid memory leaks
+    // and phantom sounds in the background.
     video.pause()
     video.src = ''
-    if (videoTexture) {
-        videoTexture.dispose()
+    if (videoTexture.value) {
+        videoTexture.value.dispose()
+        videoTexture.value = null
     }
 })
 
@@ -112,10 +146,13 @@ onUnmounted(() => {
     <TresMesh :geometry="nodes.Object_82.geometry" :material="materials.gMtYExgrEUqPfln" :material-color="modelColor" :rotation="[Math.PI / 2, 0, 0]" />
     <TresMesh :geometry="nodes.Object_96.geometry" :material="materials.PaletteMaterial003" :material-color="modelColor" :rotation="[Math.PI / 2, 0, 0]" />
     <TresMesh :geometry="nodes.Object_107.geometry" :material="materials.JvMFZolVCdpPqjj" :material-color="modelColor" :rotation="[Math.PI / 2, 0, 0]" />
+    
+    <!-- SCREEN: VideoTexture Rendering -->
     <TresMesh :geometry="nodes.Object_123.geometry" :rotation="[Math.PI / 2, 0, 0]">
       <TresMeshStandardMaterial v-if="videoTexture" :map="videoTexture" :roughness="0.2" :metalness="0.1" />
       <TresMeshStandardMaterial v-else color="black" />
     </TresMesh>
+    
     <TresMesh :geometry="nodes.Object_127.geometry" :material="materials.ZCDwChwkbBfITSW" :material-color="modelColor" :rotation="[Math.PI / 2, 0, 0]" />
   </TresGroup>
 </template>

@@ -1,4 +1,16 @@
 <script setup lang="ts">
+/**
+ * [COMPONENT] :: PAGE_FOOTER
+ * ----------------------------------------------------------------------
+ * Final footer of the application.
+ *
+ * Features:
+ * - Dynamic links generated from constants.
+ * - Dynamic Copyright date (zero maintenance).
+ *
+ * @module    src/components/Footer
+ * ----------------------------------------------------------------------
+ */
 import { footerLinks } from '../constants'
 </script>
 
@@ -12,6 +24,11 @@ import { footerLinks } from '../constants'
             <hr />
 
             <div class="links">
+                <!-- 
+                  [DYNAMIC_DATA] :: AUTO_UPDATED_YEAR
+                  We use JavaScript directly in the template (interpolation)
+                  so the year is always updated without changing the code.
+                -->
                 <p>Copyright © {{ new Date().getFullYear() }} Apple Inc. All rights reserved.</p>
 
                 <ul>

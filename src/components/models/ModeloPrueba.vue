@@ -1,13 +1,13 @@
 <script setup lang="ts">
 /**
- * [COMPONENT] :: MODELO_PRUEBA
+ * [COMPONENT] :: TEST_MODEL
  * ----------------------------------------------------------------------
- * Componente de pruebas para experimentación con modelos 3D.
- * Similar al Macbook-14 pero incluye lógica experimental de interacción.
+ * Test component for 3D model experimentation.
+ * Similar to Macbook-14 but includes experimental interaction logic.
  * 
- * Funcionalidades experimentales:
- * - Cambio de color al pasar el cursor (hover event handling).
- * - Carga de texturas alternativas (/screen-e.png).
+ * Experimental Features:
+ * - Color change on hover (hover event handling).
+ * - Alternative texture loading (/screen-e.png).
  *
  * @module    components/models
  * ----------------------------------------------------------------------
@@ -70,7 +70,7 @@ const textureLoader = new TextureLoader()
 let texture: Texture | null = null
 
 try {
-  // Nota: Cargamos una textura diferente para diferenciar este modelo de prueba
+  // Note: We load a different texture to differentiate this test model
   texture = await textureLoader.loadAsync('/screen-e.png')
   if (texture) {
     texture.colorSpace = SRGBColorSpace
@@ -91,28 +91,28 @@ try {
 
 /**
  * [HANDLER] :: POINTER_OVER
- * Cambia el color del material a rojo cuando el cursor pasa por encima.
+ * Changes material color to red when cursor hovers over.
  * 
- * @param e - Evento de TresJS que contiene el objeto interceptado.
+ * @param e - TresJS event containing the intercepted object.
  */
 const handlePointerOver = (e: any) => {
-  e.stopPropagation() // Prevenir que el evento burbujee a otros objetos detrás
+  e.stopPropagation() // Prevent event from bubbling to other objects behind
   const mesh = e.object
   
-  // Guardamos el material original si no lo tenemos ya
+  // Store original material if we don't have it yet
   if (!mesh.userData.originalMaterial) {
     mesh.userData.originalMaterial = mesh.material
   }
   
-  // Clonamos para no afectar a otros objetos que compartan el mismo material
+  // Clone to not affect other objects sharing the same material
   const newMaterial = mesh.userData.originalMaterial.clone()
-  newMaterial.color.set(0xff0000) // Rojo puro
+  newMaterial.color.set(0xff0000) // Pure red
   mesh.material = newMaterial
 }
 
 /**
  * [HANDLER] :: POINTER_OUT
- * Restaura el material original cuando el cursor sale del objeto.
+ * Restores original material when cursor leaves the object.
  */
 const handlePointerOut = (e: any) => {
   e.stopPropagation()
@@ -136,7 +136,7 @@ const handlePointerOut = (e: any) => {
     v-on:pointerover="handlePointerOver" 
     v-on:pointerout="handlePointerOut"
   >
-    <!-- MESHES: Renderizado estándar de componentes -->
+    <!-- MESHES: Standard component rendering -->
     <TresMesh :geometry="nodes.Object_10.geometry" :material="materials.PaletteMaterial001" :rotation="[Math.PI / 2, 0, 0]" />
     <TresMesh :geometry="nodes.Object_16.geometry" :material="materials.zhGRTuGrQoJflBD" :material-color="modelColor" :rotation="[Math.PI / 2, 0, 0]" />
     <TresMesh :geometry="nodes.Object_20.geometry" :material="materials.PaletteMaterial002" :material-color="modelColor" :rotation="[Math.PI / 2, 0, 0]" />

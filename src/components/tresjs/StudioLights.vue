@@ -1,18 +1,18 @@
 <script setup lang="ts">
 /**
- * STUDIOLIGHTS - Configuración de iluminación de estudio para escenas 3D
+ * STUDIOLIGHTS - Studio lighting configuration for 3D scenes
  * =========================================================================
  * 
- * Este componente replica la funcionalidad de react-three/drei:
- * - Environment con Lightformers (para iluminación basada en imagen/HDR)
- * - SpotLights para iluminación direccional
+ * This component replicates the functionality of react-three/drei:
+ * - Environment with Lightformers (for image-based/HDR lighting)
+ * - SpotLights for directional lighting
  * 
- * En TresJS, usamos componentes nativos de Three.js directamente.
+ * In TresJS, we use native Three.js components directly.
  * 
- * NOTA: @tresjs/cientos tiene <Environment> pero NO tiene Lightformer.
- * Para replicar el efecto de Lightformer puedes usar:
- * 1. Un Environment preset (más simple)
- * 2. RectAreaLights (equivalente más cercano a Lightformer)
+ * NOTE: @tresjs/cientos has <Environment> but NO Lightformer.
+ * To replicate the Lightformer effect you can use:
+ * 1. An Environment preset (simpler)
+ * 2. RectAreaLights (closest equivalent to Lightformer)
  */
 import { Environment } from '@tresjs/cientos'
 </script>
@@ -22,18 +22,18 @@ import { Environment } from '@tresjs/cientos'
     <!--
     ENVIRONMENT
     ===========
-    En @react-three/drei, Environment + Lightformer crea luces de área rectangulares
-    dentro de un cubo de entorno para reflejos suaves.
+    In @react-three/drei, Environment + Lightformer creates rectangular area lights
+    inside an environment cube for soft reflections.
     
-    En TresJS/Cientos, Environment soporta presets HDR o puedes cargar tu propio HDR.
-    Los presets disponibles: 'sunset', 'dawn', 'night', 'warehouse', 'forest', 
+    In TresJS/Cientos, Environment supports HDR presets or you can load your own HDR.
+    Available presets: 'sunset', 'dawn', 'night', 'warehouse', 'forest', 
     'apartment', 'studio', 'city', 'park', 'lobby'
     
-    'studio' es el más cercano al setup original de Lightformers.
+    'studio' is the closest to the original Lightformer setup.
     -->
     <!-- 
-    background=false (o sin la prop) → solo afecta reflejos del modelo
-    background=true → muestra el HDR como imagen de fondo visible
+    background=false (or missing prop) → only affects model reflections
+    background=true → shows HDR as visible background image
     -->
     <Environment 
       :resolution="256" 
@@ -41,15 +41,15 @@ import { Environment } from '@tresjs/cientos'
     />
     
     <!--
-    RECTAREALIGHT - Equivalente a Lightformer
+    RECTAREALIGHT - Equivalent to Lightformer
     ==========================================
-    RectAreaLight es el equivalente nativo de Three.js a Lightformer.
-    Crea luz de área rectangular perfecta para iluminación de estudio.
+    RectAreaLight is the native Three.js equivalent to Lightformer.
+    Creates perfect rectangular area light for studio lighting.
     
-    IMPORTANTE: RectAreaLight requiere RectAreaLightUniformsLib.init() que
-    Three.js carga automáticamente, pero a veces necesita el helper visual.
+    IMPORTANT: RectAreaLight requires RectAreaLightUniformsLib.init() which
+    Three.js loads automatically, but sometimes needs custom handling or helpers.
     
-    Posición [-10, 5, -5] con rotación Y = PI/2 (90°) apunta hacia el centro
+    Position [-10, 5, -5] with rotation Y = PI/2 (90°) points towards the center
     -->
     <TresRectAreaLight
       :position="[-10, 5, -5]"
@@ -72,13 +72,13 @@ import { Environment } from '@tresjs/cientos'
     <!--
     SPOTLIGHTS
     ==========
-    Los SpotLights son idénticos en Three.js/TresJS.
-    - angle: ángulo del cono de luz en radianes
-    - decay: atenuación de la luz con la distancia (0 = sin atenuación)
-    - intensity: intensidad de la luz
+    SpotLights are identical in Three.js/TresJS.
+    - angle: light cone angle in radians
+    - decay: light attenuation with distance (0 = no attenuation)
+    - intensity: light intensity
     
-    Math.PI * 0.2 ≈ 0.628 (intensidad suave)
-    Math.PI * 1 ≈ 3.14 (intensidad fuerte)
+    Math.PI * 0.2 ≈ 0.628 (soft intensity)
+    Math.PI * 1 ≈ 3.14 (strong intensity)
     -->
     <TresSpotLight
       :position="[-2, 10, 5]"
