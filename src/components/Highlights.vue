@@ -1,32 +1,65 @@
 <script setup lang="ts">
+/**
+ * [COMPONENT] :: HIGHLIGHTS_GRID
+ * ----------------------------------------------------------------------
+ * Bento-style grid highlighting key features.
+ *
+ * Complex Logic:
+ * - Conditional animations (GSAP MatchMedia) for Mobile/Desktop.
+ * - Strict memory cleanup management (Garbage Collection).
+ * - Use of class selectors for batch animations.
+ *
+ * @module    src/components/Highlights
+ * ----------------------------------------------------------------------
+ */
 import { onMounted, onUnmounted } from 'vue';
 import gsap from 'gsap';
 
+// =====================================================================
+// [SECTION] :: COMPONENT STATE
+// =====================================================================
+// Store GSAP context to revert ALL animations created in this component
+// at once. This is crucial in SPAs to avoid memory leaks.
 let ctx: gsap.Context;
 
+// =====================================================================
+// [SECTION] :: LIFECYCLE HOOKS
+// =====================================================================
 onMounted(() => {
+  // [MATCH_MEDIA] : Responsive Animations
+  // gsap.matchMedia() allows defining animations that ONLY exist
+  // at certain breakpoints. If the window changes, GSAP handles
+  // reverting/recreating as needed.
   const mm = gsap.matchMedia();
 
-  // Adding context for proper cleanup
+  // Create context. Everything animated inside this callback
+  // will be recorded in 'ctx'.
   ctx = gsap.context(() => {
     
     mm.add({
+      // Define readable "conditions"
       isMobile: "(max-width: 1024px)",
       isDesktop: "(min-width: 1025px)",
     }, (context) => {
+      // Extract current boolean
       const { isMobile } = context.conditions as { isMobile: boolean };
 
+      // [SETUP] : Initial State
+      // Prepare elements hidden and shifted down.
       gsap.set(['.left-column', '.right-column'], { y: 50, opacity: 0 });
 
-      // Animation logic
+      // [ANIMATION] : Entrance
+      // Animate both columns to their original position.
       gsap.to(['.left-column', '.right-column'], {
           scrollTrigger: {
               trigger: '.masonry',
+              // Desktop: Starts when masonry top reaches center.
+              // Mobile: we wait a bit longer (bottom bottom).
               start: isMobile ? 'bottom bottom' : 'top center'
           },
-          y: 0,
+          y: 0, 
           opacity: 1,
-          stagger: 0.5,
+          stagger: 0.5, // 0.5s de retraso entre la columna izq y der
           duration: 1,
           ease: 'power1.inOut'
       });
@@ -36,7 +69,10 @@ onMounted(() => {
 })
 
 onUnmounted(() => {
-  if (ctx) ctx.revert(); // Reverts matchMedia as well since it was created inside
+  // [CLEANUP] :: MEMORY_MANAGEMENT
+  // Revert context. This kills ScrollTriggers, MatchMedias
+  // and returns DOM elements to their original pre-JS CSS style.
+  if (ctx) ctx.revert(); 
 })
 </script>
 

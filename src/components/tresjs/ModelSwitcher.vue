@@ -2,13 +2,13 @@
 /**
  * [COMPONENT] :: MODEL_SWITCHER
  * ----------------------------------------------------------------------
- * Componente inteligente que gestiona la transición entre los modelos 3D
- * del MacBook Pro de 14" y 16".
+ * Smart component managing the transition between the 3D models
+ * of the 14" and 16" MacBook Pro.
  *
- * Responsabilidades:
- * 1. Cargar ambos modelos en la escena.
- * 2. Gestionar la animación de entrada/salida según el tamaño de pantalla.
- * 3. Controlar la cámara orbital (rotación).
+ * Responsibilities:
+ * 1. Load both models into the scene.
+ * 2. Manage entry/exit animation based on screen size.
+ * 3. Control orbital camera (rotation).
  *
  * @module    components/tresjs
  * ----------------------------------------------------------------------
@@ -24,31 +24,31 @@ import MacbookModel14 from '../models/Macbook-14.vue'
 // [SECTION] :: COMPONENT PROPS
 // =====================================================================
 const props = defineProps<{
-  scale: number // Factor de escala actual basado en el ancho de la ventana
-  isMobile: boolean // Flag para determinar si estamos en dispositivo móvil
+  scale: number // Current scale factor based on window width
+  isMobile: boolean // Flag to determine if we are on mobile
 }>()
 
 // =====================================================================
 // [SECTION] :: CONSTANTS & CONFIG
 // =====================================================================
-const ANIMATION_DURATION = 1 // Segundos que tarda la transición de movimiento/opacidad
-const OFFSET_DISTANCE = 5 // Distancia en unidades 3D para sacar el modelo de pantalla
-const SCALE_LARGE_DESKTOP = 0.08 // Escala específica para desktop grande
-const SCALE_LARGE_MOBILE = 0.05 // Escala específica para móvil grande
+const ANIMATION_DURATION = 1 // Seconds for movement/opacity transition
+const OFFSET_DISTANCE = 5 // Distance in 3D units to move model off-screen
+const SCALE_LARGE_DESKTOP = 0.08 // Specific scale for large desktop
+const SCALE_LARGE_MOBILE = 0.05 // Specific scale for large mobile
 
 // =====================================================================
 // [SECTION] :: COMPONENT STATE
 // =====================================================================
 /**
- * Refs a los grupos de TresJS.
- * Son las "cajas" que contienen nuestros modelos y que moveremos con GSAP.
+ * Refs to TresJS groups.
+ * These are the "boxes" containing our models that we will move with GSAP.
  */
 const smallMacbookRef = ref()
 const largeMacbookRef = ref()
 
 /**
- * Flag de control para la primera carga.
- * Nos permite evitar la animación de "deslizamiento" inicial.
+ * Control flag for first load.
+ * Allows us to avoid the initial "sliding" animation.
  */
 const isFirstRun = ref(true)
 
@@ -58,19 +58,19 @@ const isFirstRun = ref(true)
 
 /**
  * [ANIMATION] :: FADE_MESHES
- * Recorre recursivamente un grupo 3D y anima la opacidad de todos sus materiales.
+ * Recursively traverses a 3D group and animates the opacity of all its materials.
  *
- * @param group    - El objeto/grupo root a recorrer (Object3D).
- * @param opacity  - Valor objetivo de opacidad (0 = invisible, 1 = visible).
- * @param duration - Tiempo en segundos para completar la transición.
+ * @param group    - The root object/group to traverse (Object3D).
+ * @param opacity  - Target opacity value (0 = invisible, 1 = visible).
+ * @param duration - Time in seconds to complete the transition.
  */
 const fadeMeshes = (group: any, opacity: number, duration: number) => {
   if (!group) return
 
   group.traverse((child: any) => {
-    // Solo nos interesan las mallas (Meshes) que tienen material visible
+    // We are only interested in Meshes that have visible material
     if (child.isMesh) {
-      child.material.transparent = true // Aseguramos que soporte transparencia
+      child.material.transparent = true // Ensure it supports transparency
       gsap.to(child.material, { opacity, duration })
     }
   })
@@ -78,11 +78,11 @@ const fadeMeshes = (group: any, opacity: number, duration: number) => {
 
 /**
  * [ANIMATION] :: MOVE_GROUP
- * Desplaza un grupo entero en el eje X.
+ * Moves an entire group on the X axis.
  *
- * @param group    - El objeto/grupo a mover.
- * @param x        - Posición destino en el eje X.
- * @param duration - Tiempo en segundos para completar el movimiento.
+ * @param group    - The object/group to move.
+ * @param x        - Target X position.
+ * @param duration - Time in seconds to complete the movement.
  */
 const moveGroup = (group: any, x: number, duration: number) => {
   if (!group) return
@@ -94,8 +94,8 @@ const moveGroup = (group: any, x: number, duration: number) => {
 // [SECTION] :: COMPUTED LOGIC
 // =====================================================================
 /**
- * Determina qué MacBook se debe mostrar basado en la escala actual.
- * Devuelve true si debemos mostrar el modelo de 16" (Large).
+ * Determines which MacBook should be shown based on current scale.
+ * Returns true if we should show the 16" model (Large).
  */
 const showLargeMacbook = computed(() => {
   return props.scale === SCALE_LARGE_DESKTOP || props.scale === SCALE_LARGE_MOBILE
@@ -106,56 +106,56 @@ const showLargeMacbook = computed(() => {
 // =====================================================================
 /**
  * [WATCHER] :: SCALE_TRANSITION_MANAGER
- * El cerebro de la operación. Vigila cambios en la escala (props.scale)
- * y la disponibilidad de los modelos (refs).
+ * The brains of the operation. Watches for scale changes (props.scale)
+ * and model availability (refs).
  *
- * Estrategia:
- * 1. Si es la PRIMERA ejecución (carga), mueve los modelos instantáneamente (duración 0).
- * 2. Si es una interacción posterior, anima suavemente la transición.
+ * Strategy:
+ * 1. If FIRST run (load), move models instantly (duration 0).
+ * 2. If subsequent interaction, smoothly animate transition.
  */
 watch(
   [() => props.scale, smallMacbookRef, largeMacbookRef],
   () => {
-    // GUARD: Si los modelos no se han cargado aún, abortamos.
+    // GUARD: If models haven't loaded yet, abort.
     if (!smallMacbookRef.value || !largeMacbookRef.value) return
 
-    // LOGIC: Primera vez = Teletransporte (0s). Siguientes = Animación (1s).
+    // LOGIC: First time = Teleport (0s). Next times = Animation (1s).
     const duration = isFirstRun.value ? 0 : ANIMATION_DURATION
 
     if (showLargeMacbook.value) {
-      // CASO A: Mostrar Grande (16")
-      // 1. Movemos el pequeño fuera (-5) y el grande al centro (0)
+      // CASE A: Show Large (16")
+      // 1. Move small out (-5) and large to center (0)
       moveGroup(smallMacbookRef.value, -OFFSET_DISTANCE, duration)
       moveGroup(largeMacbookRef.value, 0, duration)
 
-      // 2. Desvanecemos el pequeño y mostramos el grande
+      // 2. Fade out small and show large
       fadeMeshes(smallMacbookRef.value, 0, duration)
       fadeMeshes(largeMacbookRef.value, 1, duration)
     } else {
-      // CASO B: Mostrar Pequeño (14")
-      // 1. Movemos el pequeño al centro (0) y el grande fuera (+5)
+      // CASE B: Show Small (14")
+      // 1. Move small to center (0) and large out (+5)
       moveGroup(smallMacbookRef.value, 0, duration)
       moveGroup(largeMacbookRef.value, OFFSET_DISTANCE, duration)
 
-      // 2. Mostramos el pequeño y desvanecemos el grande
+      // 2. Show small and fade out large
       fadeMeshes(smallMacbookRef.value, 1, duration)
       fadeMeshes(largeMacbookRef.value, 0, duration)
     }
 
-    // STATE: Ya hemos terminado la carga inicial.
+    // STATE: Initial load finished.
     if (isFirstRun.value) {
       isFirstRun.value = false
     }
   },
   {
-    immediate: true, // Ejecutar al montar el componente
-    flush: 'post', // ESPERAR a que el DOM/Template se haya renderizado para tener acceso a los refs
+    immediate: true, // Execute on mount
+    flush: 'post', // WAIT for DOM/Template to render to access refs
   },
 )
 </script>
 
 <template>
-  <!-- Control de cámara orbital: solo rotación, sin zoom ni desplazamiento -->
+  <!-- Orbital controls: rotation only, no zoom or pan -->
   <OrbitControls
     :enable-pan="false"
     :enable-zoom="false"
@@ -163,12 +163,12 @@ watch(
     :max-polar-angle="Math.PI - Math.PI / 6"
   />
 
-  <!-- Grupo Malla 16 Pulgadas -->
+  <!-- 16 Inch Mesh Group -->
   <TresGroup ref="largeMacbookRef">
     <MacbookModel16 :scale="isMobile ? 0.05 : 0.08" />
   </TresGroup>
 
-  <!-- Grupo Malla 14 Pulgadas -->
+  <!-- 14 Inch Mesh Group -->
   <TresGroup ref="smallMacbookRef">
     <MacbookModel14 :scale="isMobile ? 0.03 : 0.06" />
   </TresGroup>

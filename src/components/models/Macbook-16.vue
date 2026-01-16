@@ -1,4 +1,13 @@
 <script setup lang="ts">
+/**
+ * [COMPONENT] :: MACBOOK_MODEL_16
+ * ----------------------------------------------------------------------
+ * 16-inch version of the 3D model.
+ * Structurally identical to the 14" one, but references a different GLB asset.
+ *
+ * @module    components/models
+ * ----------------------------------------------------------------------
+ */
 import { computed } from 'vue'
 import { useGLTF } from '@tresjs/cientos'
 import { Color, SRGBColorSpace, Texture, TextureLoader } from 'three'
@@ -17,23 +26,31 @@ const props = withDefaults(defineProps<Props>(), {
   scale: 1,
 })
 
+// =====================================================================
+// [SECTION] :: STORE & STATE
+// =====================================================================
 const store = useMacbookStore()
 const { color } = storeToRefs(store)
 
-// Ensure we pass a Three.js Color instance to the material-color prop to avoid any parsing issues
+// Ensure the color is a valid THREE.Color instance
 const modelColor = computed(() => new Color(color.value))
 
-// Cientos useGLTF returns a reactive wrapper, not the direct GLTF object in some versions
+// =====================================================================
+// [SECTION] :: MODEL PREPARATION
+// =====================================================================
+/**
+ * [RESOURCE] :: GLTF_LOADER
+ * Load the specific 16" model.
+ * Draco compression significantly reduces file size.
+ */
 const modelRef = await useGLTF('/models/macbook-16-transformed.glb', { draco: true })
-// Intentar obtener el objeto GLTF real desde el wrapper
 const model = modelRef.state?.value
-
 const scene = model?.scene
 
-// Intentar obtener el objeto GLTF real desde el wrapper
 const nodes: Record<string, any> = {}
 const materials: Record<string, any> = {}
 
+// Manual mapping to link materials to specific nodes
 if (scene) {
   scene.traverse((object: any) => {
     if (object.name) nodes[object.name] = object
@@ -43,8 +60,9 @@ if (scene) {
   })
 }
 
-// Cargar la textura de la pantalla
-// Nota: '/screen.png' debe estar en la carpeta public
+// =====================================================================
+// [SECTION] :: DYNAMIC TEXTURE
+// =====================================================================
 const textureLoader = new TextureLoader()
 let texture: Texture | null = null
 try {
@@ -54,7 +72,7 @@ try {
     texture.flipY = true
     texture.needsUpdate = true
     
-    // Check if the target mesh has UVs
+    // Defensive UV validation
     if (nodes.Object_123 && !nodes.Object_123.geometry.attributes.uv) {
         console.warn('Macbook-16: Object_123 has no UV attributes! Texture data cannot be mapped.')
     }
@@ -66,6 +84,11 @@ try {
 
 <template>
   <TresGroup v-if="nodes?.Object_10" :position="props.position" :rotation="props.rotation" :scale="props.scale">
+    <!-- 
+      [RENDER] :: MESH_ASSEMBLY
+      Reconstruction of the model piece by piece.
+      This gives us granular control over which parts change color.
+    -->
     <TresMesh :geometry="nodes.Object_10.geometry" :material="materials.PaletteMaterial001" :rotation="[Math.PI / 2, 0, 0]" />
     <TresMesh :geometry="nodes.Object_16.geometry" :material="materials.zhGRTuGrQoJflBD" :material-color="modelColor" :rotation="[Math.PI / 2, 0, 0]" />
     <TresMesh :geometry="nodes.Object_20.geometry" :material="materials.PaletteMaterial002" :material-color="modelColor" :rotation="[Math.PI / 2, 0, 0]" />

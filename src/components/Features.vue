@@ -2,16 +2,15 @@
 /**
  * [COMPONENT] :: FEATURES
  * ----------------------------------------------------------------------
- * Sección que muestra las características del producto con animaciones 
- * sincronizadas al scroll.
+ * Section displaying product features with scroll-synchronized animations.
  *
- * DIFERENCIAS CLAVE CON REACT:
- * 1. En React, el Canvas de R3F se puede pinnear directamente.
- *    En Vue/TresJS, debemos envolver el canvas en un wrapper para evitar
- *    problemas de dimensiones al pinnear.
+ * KEY DIFFERENCES FROM REACT:
+ * 1. In React, R3F Canvas can be pinned directly.
+ *    In Vue/TresJS, we must wrap the canvas in a wrapper to avoid
+ *    dimension issues when pinning.
  * 
- * 2. En React, useGSAP se ejecuta después del render.
- *    En Vue, usamos watch con flush: 'post' para esperar al modelo 3D.
+ * 2. In React, useGSAP runs after render.
+ *    In Vue, we use watch with flush: 'post' to wait for the 3D model.
  *
  * @module components/Features.vue
  * ----------------------------------------------------------------------
@@ -34,17 +33,17 @@ import MacbookModel from './models/Macbook.vue'
 
 const groupRef = ref<any>(null)
 
-// Usamos shallowRef para ctx porque GSAP Context no necesita reactividad profunda
+// We use shallowRef for ctx because GSAP Context doesn't need deep reactivity
 const ctx = shallowRef<gsap.Context | null>(null)
 
-// Ref para controlar si las animaciones ya se inicializaron en esta instancia
+// Ref to control if animations have already initialized in this instance
 const animationsInitialized = ref(false)
 
 const store = useMacbookStore()
 const { setTexture } = store
 const isMobile = useMediaQuery('(max-width: 1024px)')
 
-// Array para almacenar los videos precargados y permitir su limpieza
+// Array to store preloaded videos and allow their cleanup
 const preloadedVideos: HTMLVideoElement[] = []
 
 
@@ -53,7 +52,7 @@ const preloadedVideos: HTMLVideoElement[] = []
 // =====================================================================
 
 onMounted(() => {
-    // Pre-cargar todos los videos y almacenarlos para posterior limpieza
+    // Pre-load all videos and store them for later cleanup
     featureSequence.forEach((feature) => {
         const video = document.createElement('video')
         Object.assign(video, {
@@ -65,7 +64,7 @@ onMounted(() => {
         })
         video.load()
         
-        // Almacenar referencia para poder limpiar en onUnmounted
+        // Store reference to clean up in onUnmounted
         preloadedVideos.push(video)
     })
 })
@@ -76,11 +75,11 @@ onMounted(() => {
 // =====================================================================
 
 /**
- * [WATCHER] :: Inicializar animaciones cuando el groupRef esté listo
+ * [WATCHER] :: Initialize animations when groupRef is ready
  * 
- * DIFERENCIA CON REACT:
- * En React, useGSAP se ejecuta después del mount.
- * En Vue con Suspense, el modelo carga async, así que usamos watch.
+ * REACT DIFFERENCE:
+ * In React, useGSAP runs after mount.
+ * In Vue with Suspense, the model loads async, so we use watch.
  */
 watch(
     groupRef,
@@ -91,63 +90,63 @@ watch(
 
         ctx.value = gsap.context(() => {
             /**
-             * TIMELINE 1: Rotación del modelo 3D
+             * TIMELINE 1: 3D Model Rotation
              * 
-             * EQUIVALENCIA REACT:
+             * REACT EQUIVALENT:
              * trigger: '#f-canvas', pin: true
              * 
-             * EN VUE: Usamos #canvas-wrapper como el elemento a pinnear
-             * porque pinnear directamente un canvas WebGL causa problemas.
+             * IN VUE: We use #canvas-wrapper as the pin element
+             * because pinning a WebGL canvas directly causes issues.
              */
             const modelTimeline = gsap.timeline({
                 scrollTrigger: {
                     trigger: '#canvas-wrapper',
                     start: 'top top',
                     end: 'bottom top',
-                    scrub: 3,  // Aumentado para animación más suave
+                    scrub: 3,  // Increased for smoother animation
                     pin: true,
                 }
             })
 
             /**
-             * TIMELINE 2: Sincronización de contenido
+             * TIMELINE 2: Content Synchronization
              * 
-             * start: 'top top' - Empieza cuando el canvas está pinneado arriba
-             * (no 'top center' que era demasiado pronto)
+             * start: 'top top' - Starts when canvas is pinned at top
+             * (not 'top center' which was too early)
              */
             const contentTimeline = gsap.timeline({
                 scrollTrigger: {
                     trigger: '#canvas-wrapper',
                     start: 'top center',  
                     end: 'bottom top',
-                    scrub: 2,  // Aumentado de 1 a 2 para animación más suave
+                    scrub: 2,  // Increased from 1 to 2 for smoother animation
                 }
             })
 
-            // Rotación 360° del modelo
+            // 360° Model Rotation
             modelTimeline.to(
                 newValue.rotation, 
                 { y: Math.PI * 2, ease: 'power1.inOut' }
             )
 
             /**
-             * Sincronización de contenido y videos
+             * Content and Video Synchronization
              * 
-             * ESTRUCTURA:
-             * 1. Primero cargamos el video (sin mostrar texto)
-             * 2. Luego mostramos el texto y dejamos tiempo para leerlo
+             * STRUCTURE:
+             * 1. First we load the video (without showing text)
+             * 2. Then we show the text and allow time to read
              * 
-             * El "delay" inicial permite que el ordenador se centre
-             * antes de que aparezca el primer texto.
+             * The initial "delay" allows the laptop to center
+             * before the first text appears.
              */
             contentTimeline
-                // INTRO: Cargar primer video y dar tiempo inicial
+                // INTRO: Load first video and give initial time
                 .call(() => setTexture('/videos/feature-1.mp4'))
-                .to({}, { duration: 0.5 })  // Espacio vacío para centrar el ordenador
+                .to({}, { duration: 0.5 })  // Empty space to center laptop
                 
                 // Feature 1: Email AI
                 .to('.box1', { opacity: 1, y: 0, duration: 0.8 })
-                .to({}, { duration: 0.2 })  // Pequeña pausa para leer
+                .to({}, { duration: 0.2 })  // Small pause to read
                 
                 // Feature 2: Image AI
                 .call(() => setTexture('/videos/feature-2.mp4'))
@@ -173,27 +172,27 @@ watch(
 )
 
 onUnmounted(() => {
-    // Limpiar GSAP context al desmontar
+    // Clean GSAP context on unmount
     ctx.value?.revert()
     
-    // Limpiar videos precargados para liberar memoria
+    // Clean preloaded videos to free memory
     preloadedVideos.forEach((video) => {
-        // Pausar reproducción si está en curso
+        // Pause playback if running
         video.pause()
         
-        // Limpiar src y forzar descarga de buffers
+        // Clear src and force buffer flush
         video.src = ''
         video.load()
         
-        // Eliminar atributos de media
+        // Remove media attributes
         video.removeAttribute('crossOrigin')
         video.removeAttribute('playsInline')
     })
     
-    // Vaciar el array para permitir garbage collection
+    // Empty array to allow garbage collection
     preloadedVideos.length = 0
     
-    // Resetear el flag para que si el componente se remonta, las animaciones se reinicien
+    // Reset flag so if component remounts, animations restart
     animationsInitialized.value = false
 })
 </script>
@@ -205,9 +204,9 @@ onUnmounted(() => {
 
         <!--
             [WRAPPER] :: CANVAS_CONTAINER
-            En React, el Canvas se pinnea directamente.
-            En Vue/TresJS, envolvemos el canvas en un wrapper porque
-            GSAP pin manipula estilos que afectan al canvas WebGL.
+            In React, the Canvas is pinned directly.
+            In Vue/TresJS, we wrap the canvas because
+            GSAP pin manipulates styles that affect the WebGL canvas.
         -->
         <div id="canvas-wrapper" class="w-full h-dvh">
             <TresCanvas id="f-canvas" class="w-full h-full">
@@ -239,10 +238,10 @@ onUnmounted(() => {
 
         <!--
             [OVERLAY] :: FEATURE_BOXES
-            Exactamente como en React: absolute inset-0 dentro de #features.
-            Las posiciones (top-[20%], etc.) son relativas a #features.
-            Cuando GSAP pinnea el canvas-wrapper, genera pinSpacing
-            que aumenta la altura de #features.
+            Exactly like in React: absolute inset-0 inside #features.
+            Positions (top-[20%], etc.) are relative to #features.
+            When GSAP pins the canvas-wrapper, it generates pinSpacing
+            that increases the height of #features.
         -->
         <div class="absolute inset-0">
             <div 
