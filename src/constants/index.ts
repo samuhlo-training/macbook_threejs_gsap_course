@@ -80,14 +80,14 @@ const features = [
         icon: "/feature-icon1.svg",
         highlight: "Email AI.",
         text: "Summarize and draft replies to emails instantly, so you stay on top of your inbox.",
-        styles: "left-5 md:left-20 top-[20%] opacity-0 translate-y-5",
+        styles: "left-5 md:left-20 top-[30%] opacity-0 translate-y-5",
     },
     {
         id: 2,
         icon: "/feature-icon2.svg",
         highlight: "Image AI.",
         text: "Generate or edit images with ease. Just type what you imagine, and let AI bring it to life.",
-        styles: "right-5 md:right-20 top-[30%] opacity-0 translate-y-5",
+        styles: "right-5 md:right-20 top-[40%] opacity-0 translate-y-5",
     },
     {
         id: 3,
