@@ -60,7 +60,7 @@ onMounted(() => {
 
                 timeline
                     .to('.mask img', {
-                        transform: 'scale(1.1)', // Matching React exactly
+                        transform: 'scale(1.15)',
                     })
                     .to('.content', { 
                         opacity: 1, 
