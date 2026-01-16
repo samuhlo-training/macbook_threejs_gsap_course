@@ -9,13 +9,9 @@ import Highlights from './components/Highlights.vue'
 import Footer from './components/Footer.vue'
 import gsap from 'gsap'
 import { ScrollTrigger, SplitText } from 'gsap/all'
-import { onMounted } from 'vue'
 
+gsap.registerPlugin(ScrollTrigger, SplitText)
 
-onMounted(() => {
-  gsap.registerPlugin(ScrollTrigger)
-  gsap.registerPlugin(SplitText)
-})
 </script>
 
 <template>

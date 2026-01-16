@@ -12,7 +12,7 @@ import { footerLinks } from '../constants'
             <hr />
 
             <div class="links">
-                <p>Copyright © 2024 Apple Inc. All rights reserved.</p>
+                <p>Copyright © {{ new Date().getFullYear() }} Apple Inc. All rights reserved.</p>
 
                 <ul>
                     <li v-for="link in footerLinks" :key="link.label">
