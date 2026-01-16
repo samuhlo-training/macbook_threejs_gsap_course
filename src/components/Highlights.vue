@@ -16,6 +16,8 @@ onMounted(() => {
     }, (context) => {
       const { isMobile } = context.conditions as { isMobile: boolean };
 
+      gsap.set(['.left-column', '.right-column'], { y: 50, opacity: 0 });
+
       // Animation logic
       gsap.to(['.left-column', '.right-column'], {
           scrollTrigger: {
