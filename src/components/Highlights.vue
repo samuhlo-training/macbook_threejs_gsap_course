@@ -4,6 +4,11 @@
  * ----------------------------------------------------------------------
  * Bento-style grid highlighting key features.
  *
+ * TUTORIAL MODE:
+ * A responsive bento-grid layout. 
+ * Key Learning: Using 'gsap.matchMedia()' to have different animations for mobile (simple fade) 
+ * and desktop (scroll-triggered masonry reveal).
+ *
  * Complex Logic:
  * - Conditional animations (GSAP MatchMedia) for Mobile/Desktop.
  * - Strict memory cleanup management (Garbage Collection).

@@ -5,6 +5,11 @@
  * ----------------------------------------------------------------------
  * Section demonstrating a mask-reveal effect using GSAP ScrollTrigger.
  * 
+ * TUTORIAL MODE:
+ * A scroll-based "Reveal" animation.
+ * It uses a SVG mask that expands as you scroll, revealing the video underneath.
+ * Key Concept: Using 'pin: true' to keep the section in place while the animation plays.
+ *
  * @module    components/Showcase.vue
  * ----------------------------------------------------------------------
  */

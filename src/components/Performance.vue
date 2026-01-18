@@ -3,6 +3,14 @@
  * [COMPONENT] :: PERFORMANCE
  * ----------------------------------------------------------------------
  * Section displaying performance metrics and scattering images on scroll.
+ * 
+ * TUTORIAL MODE:
+ * Demonstrates "Scattering" effect.
+ * As you scroll, images fly out from the center to specific positions.
+ * It uses a timeline to orchestrate the movement of multiple elements simultaneously.
+ *
+ * @module    src/components/Performance
+ * ----------------------------------------------------------------------
  */
 
 import { onMounted, onUnmounted } from 'vue';

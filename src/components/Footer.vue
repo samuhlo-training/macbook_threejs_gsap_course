@@ -4,6 +4,10 @@
  * ----------------------------------------------------------------------
  * Final footer of the application.
  *
+ * TUTORIAL MODE:
+ * The bottom section of the page. It shows how to use dynamic JavaScript expressions 
+ * (like getting the current year) directly inside the HTML template.
+ *
  * Features:
  * - Dynamic links generated from constants.
  * - Dynamic Copyright date (zero maintenance).

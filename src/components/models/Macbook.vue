@@ -4,6 +4,11 @@
  * ----------------------------------------------------------------------
  * MacBook model variant specialized for the "Features" section.
  * 
+ * TUTORIAL MODE:
+ * A specialized 3D Model component involving Video Textures.
+ * It demonstrates how to manually create a THREE.VideoTexture from a DOM <video> element
+ * and sync it with Pinia state (to change videos on the screen).
+ *
  * Unique Features:
  * - Support for VIDEO textures on the screen (VideoTexture).
  * - Optimized for 360-degree rotation without user controls.

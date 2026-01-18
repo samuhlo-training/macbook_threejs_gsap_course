@@ -5,6 +5,11 @@
  * Root component of the application. Acts as the main orchestrator,
  * assembling all visual sections of the landing page in order.
  *
+ * TUTORIAL MODE:
+ * Think of App.vue as the "Frame" or "Skeleton" of your site.
+ * It stacks the components (Hero, Features, etc.) vertically.
+ * It also registers global animations (GSAP) so they are available everywhere.
+ *
  * Responsibilities:
  * 1. Global initialization of animation libraries (GSAP).
  * 2. Definition of the page's semantic structure.

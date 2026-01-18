@@ -3,6 +3,11 @@
  * STUDIOLIGHTS - Studio lighting configuration for 3D scenes
  * =========================================================================
  * 
+ * TUTORIAL MODE:
+ * Scene Lighting Setup.
+ * Shows how to replicate "Studio Lighting" using a combination of Environment 
+ * maps (HDR) and RectAreaLights (soft rectangular lights).
+ *
  * This component replicates the functionality of react-three/drei:
  * - Environment with Lightformers (for image-based/HDR lighting)
  * - SpotLights for directional lighting

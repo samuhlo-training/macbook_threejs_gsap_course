@@ -4,6 +4,11 @@
  * ----------------------------------------------------------------------
  * Main container for 3D product visualization.
  * Acts as the "master" page or section where UI and 3D Canvas converge.
+ *
+ * TUTORIAL MODE:
+ * The "Container" for our 3D experience.
+ * It connects the HTML UI (buttons) with the 3D world (TresCanvas).
+ * It shows how to pass State (Pinia) down to 3D components.
  * 
  * Responsibilities:
  * 1. Connect with Store (Pinia) to manage global state.

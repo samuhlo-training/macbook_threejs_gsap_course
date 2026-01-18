@@ -1,9 +1,12 @@
-<script setup>
 /**
  * [COMPONENT] :: HERO_SECTION
  * ----------------------------------------------------------------------
  * Initial impact section ("Above the Fold").
  * It is the first impression the user receives when loading the page.
+ *
+ * TUTORIAL MODE:
+ * This is the "face" of the website. It uses a video element that we control directly 
+ * via JavaScript (using a 'ref') to change its playback speed or trigger it.
  *
  * Technical Logic:
  * - Direct DOM manipulation (Template Refs) to control the video.

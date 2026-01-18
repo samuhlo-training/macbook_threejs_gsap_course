@@ -4,6 +4,11 @@
  * ----------------------------------------------------------------------
  * 16-inch version of the 3D model.
  * Structurally identical to the 14" one, but references a different GLB asset.
+ * 
+ * TUTORIAL MODE:
+ * 16-inch Model.
+ * Identical logic to the 14" model, but loads a different GLB file.
+ * Shows how component reusability applies even to complex 3D assets.
  *
  * @module    components/models
  * ----------------------------------------------------------------------

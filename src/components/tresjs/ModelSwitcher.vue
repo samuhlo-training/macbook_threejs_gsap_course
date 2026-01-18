@@ -4,6 +4,11 @@
  * ----------------------------------------------------------------------
  * Smart component managing the transition between the 3D models
  * of the 14" and 16" MacBook Pro.
+ * 
+ * TUTORIAL MODE:
+ * A "Smart" component that manages two 3D models at once.
+ * It orchestrates a smooth GSAP transition (Position & Opacity) when switching 
+ * between the 14" and 16" models, rather than just unmounting one and mounting the other.
  *
  * Responsibilities:
  * 1. Load both models into the scene.

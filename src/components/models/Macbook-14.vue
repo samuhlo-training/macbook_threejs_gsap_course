@@ -4,6 +4,11 @@
  * ----------------------------------------------------------------------
  * Component representing the 3D model of the MacBook Pro 14".
  * 
+ * TUTORIAL MODE:
+ * 14-inch Model.
+ * Demonstrates how to load a specific GLTF model and manually apply textures.
+ * It uses 'useGLTF' from @tresjs/cientos for easy async loading.
+ *
  * Responsibilities:
  * 1. Load the optimized GLTF/GLB model.
  * 2. Manage the screen texture independently.

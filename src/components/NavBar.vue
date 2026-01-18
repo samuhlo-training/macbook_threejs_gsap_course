@@ -5,6 +5,10 @@
  * Fixed or static top navigation bar.
  * Acts as the main site map for the user.
  *
+ * TUTORIAL MODE:
+ * A navigation bar that stays at the top. It demonstrates how to use a constant array 
+ * (navLinks) to generate HTML with a loop (v-for), keeping the code clean and easy to update.
+ *
  * Features:
  * - ITERATIVE rendering of links based on configuration (DRY).
  * - Optimized iconography (SVG) for secondary actions.

@@ -4,6 +4,11 @@
  * ----------------------------------------------------------------------
  * Section displaying product features with scroll-synchronized animations.
  *
+ * TUTORIAL MODE:
+ * A complex section combining 3D (TresJS) and Scroll (GSAP).
+ * It shows how to synchronize HTML content (text) with a 3D model rotation.
+ * Note how we wrap the Canvas to handle pinning correctly in Vue.
+ *
  * KEY DIFFERENCES FROM REACT:
  * 1. In React, R3F Canvas can be pinned directly.
  *    In Vue/TresJS, we must wrap the canvas in a wrapper to avoid
