@@ -1,3 +1,4 @@
+<script setup lang="ts">
 /**
  * [COMPONENT] :: HERO_SECTION
  * ----------------------------------------------------------------------
@@ -22,7 +23,7 @@ import { ref, onMounted } from 'vue';
 // =====================================================================
 // Create a "DOM Reference" (Template Ref).
 // Initially null, but Vue will populate it when the component mounts.
-const videoRef = ref(null);
+const videoRef = ref<HTMLVideoElement | null>(null);
 
 // =====================================================================
 // [SECTION] :: LIFECYCLE HOOKS

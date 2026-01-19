@@ -13,6 +13,7 @@
   <img src="https://img.shields.io/badge/GSAP-88CE02?style=for-the-badge&logo=greensock&logoColor=black" alt="GSAP" />
   <img src="https://img.shields.io/badge/PINIA-FFD700?style=for-the-badge&logo=pinia&logoColor=black" alt="Pinia" />
   <img src="https://img.shields.io/badge/TAILWIND-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white" alt="Tailwind" />
+  <img src="https://img.shields.io/badge/LENIS-ff6b6b?style=for-the-badge&logo=lenis&logoColor=white" alt="Lenis" />
 
 
   <br />
@@ -42,6 +43,7 @@
 | **3D Engine** | `TresJS` | Declarative Three.js ecosystem for Vue. |
 | **State** | `Pinia` | State management for model configuration. |
 | **Motion** | `GSAP` | ScrollTrigger, Timeline, and TextPlugin. |
+| **Scrolling** | `Lenis` | Smooth scroll synchronized with GSAP. |
 | **Styling** | `Tailwind CSS` | Utility-first for structure and design. |
 
 <br>
@@ -93,6 +95,18 @@ onMounted(() => {
 onUnmounted(() => {
   ctx?.revert();
 });
+```
+
+#### C. SMOOTH SCROLLING (LENIS)
+Global integration of `Lenis` for "luxury" scrolling. It features a manual synchronization loop (`requestAnimationFrame`) to ensure that GSAP's `ScrollTrigger` updates exactly in sync with Lenis's smooth movement, preventing jitter.
+
+```typescript
+// App.vue Loop Sync
+lenis.on('scroll', ScrollTrigger.update)
+
+gsap.ticker.add((time) => {
+  lenis.raf(time * 1000)
+})
 ```
 
 <div align="center">

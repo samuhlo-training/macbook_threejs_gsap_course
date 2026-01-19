@@ -45,10 +45,31 @@
   --color-light-100: #adb5bd;
 }
 
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+
+.lenis.lenis-smooth [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+
+.lenis.lenis-stopped {
+  overflow: hidden;
+}
+
+.lenis.lenis-scrolling iframe {
+  pointer-events: none;
+}
+
 html {
   width: 100vw;
   overflow-x: hidden;
-  scroll-behavior: smooth;
+  /* scroll-behavior: smooth;  <-- REMOVED: Lenis handles smoothing now */
 }
 
 body {
