@@ -14,6 +14,7 @@
   <img src="https://img.shields.io/badge/PINIA-FFD700?style=for-the-badge&logo=pinia&logoColor=black" alt="Pinia" />
   <img src="https://img.shields.io/badge/TAILWIND-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white" alt="Tailwind" />
   <img src="https://img.shields.io/badge/LENIS-ff6b6b?style=for-the-badge&logo=lenis&logoColor=white" alt="Lenis" />
+    <img src="https://img.shields.io/badge/TYPESCRIPT-3178C6?style=for-the-badge&logo=typescript&logoColor=white" alt="TypeScript" />
 
 
   <br />
