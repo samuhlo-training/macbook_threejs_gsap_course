@@ -30,7 +30,7 @@
 >
 > <br />
 >
-> **ORIGIN:** Based on the [Apple Website Course](https://www.youtube.com/watch?v=XUkNR-JfHwo) by [JavaScript Mastery](https://www.youtube.com/@javascriptmastery).
+> **ORIGIN:** Based on the [Apple Website Course](https://youtu.be/DEeaT6FxEws?si=dkiT3q6SG24Rc5bn) by [JavaScript Mastery](https://www.youtube.com/@javascriptmastery).
 > *Adapted to Vue 3 ecosystem by user with extensive educational comments.*
 
 ---
