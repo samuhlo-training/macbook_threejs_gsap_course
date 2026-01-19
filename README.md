@@ -34,6 +34,8 @@
 > **ORIGIN:** Based on the [Apple Website Course](https://www.youtube.com/watch?v=XUkNR-JfHwo) by [JavaScript Mastery](https://www.youtube.com/@javascriptmastery).
 > *Adapted to Vue 3 ecosystem by user with extensive educational comments.*
 > <br />
+> <br />
+>
 >  **DEMO:** [macbook-threejs-gsap-course.vercel.app](https://macbook-threejs-gsap-course.vercel.app/)
 
 ---
