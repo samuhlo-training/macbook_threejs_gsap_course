@@ -2,7 +2,7 @@
   <br />
   <br />
 
-  # <code>MACBOOK_GSAP_VUE</code>
+  # <code>MACBOOK_GSAP_VUE_COURSE</code>
 
   **DIDACTIC CONVERSION / THREEJS LABORATORY**
 
