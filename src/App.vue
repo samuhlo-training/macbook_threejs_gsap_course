@@ -33,7 +33,7 @@ import Footer from './components/Footer.vue'
 import gsap from 'gsap'
 import { ScrollTrigger, SplitText } from 'gsap/all'
 import Lenis from 'lenis'
-import { onMounted } from 'vue' // Needed for lifecycle init
+import { onMounted, onUnmounted } from 'vue' // Needed for lifecycle init
 
 // =====================================================================
 // [SECTION] :: GLOBAL CONFIGURATION
@@ -56,9 +56,18 @@ gsap.registerPlugin(ScrollTrigger, SplitText)
  * Browser scrolls -> Lenis calculates smooth position -> Lenis tells GSAP
  * -> GSAP updates ScrollTriggers -> Validates animations.
  */
+// Needed for lifecycle init
+
+// Register GSAP plugins once at the root level.
+gsap.registerPlugin(ScrollTrigger, SplitText)
+
+// Store references for cleanup
+let lenis: Lenis | null = null
+let rafCallback: ((time: number) => void) | null = null
+
 onMounted(() => {
   // 1. Initialize Lenis
-  const lenis = new Lenis()
+  lenis = new Lenis()
 
   // 2. Add Lenis to the GSAP animation loop (RAf)
   // entirely replacing the default GSAP ticker/raf for scrolling.
@@ -66,12 +75,21 @@ onMounted(() => {
 
   // 3. Connect GSAP Ticker to Lenis
   // This ensures GSAP and Lenis update at the exact same refresh rate (usually 60fps or monitor Hz)
-  gsap.ticker.add((time) => {
-    lenis.raf(time * 1000) // Convert to milliseconds
-  })
+  rafCallback = (time: number) => {
+    lenis?.raf(time * 1000) // Convert to milliseconds
+  }
+  gsap.ticker.add(rafCallback)
 
   // 4. Disable GSAP's own lag smoothing to avoid conflicts with Lenis
   gsap.ticker.lagSmoothing(0)
+})
+
+onUnmounted(() => {
+  if (rafCallback) {
+    gsap.ticker.remove(rafCallback)
+  }
+  lenis?.destroy()
+  lenis = null
 })
 
 </script>
